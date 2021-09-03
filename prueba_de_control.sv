@@ -21,8 +21,8 @@ module simbus;
 
     bs_gnrtr_n_rbtr #(`BITS, `DRIVERS, `PCKG, `BROD) uut (
         .clk(clk),
-        .reset(reset),
-    )
+        .reset(reset)
+    );
 
     initial begin
         $dumpfile(grafica.vcd);
