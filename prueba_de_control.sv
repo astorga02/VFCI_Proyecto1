@@ -5,7 +5,7 @@
 `define DRIVERS 2
 `define PCKG 16
 `define BROD 16
-`include "bs_gnrtr_n_rbtr"
+//`include "bs_gnrtr_n_rbtr"
 
 
 module simbus;
@@ -17,11 +17,17 @@ module simbus;
 
     //salidas
     wire [`BITS-1:0] salida;
+    wire pndng [`BITS-1:0][`DRIVERS-1:0];
+    wire push [`BITS-1:0][`DRIVERS-1:0];
+    wire pop [`BITS-1:0][`DRIVERS-1:0];
 
 
     bs_gnrtr_n_rbtr #(`BITS, `DRIVERS, `PCKG, `BROD) uut (
         .clk(clk),
-        .reset(reset)
+        .reset(reset),
+        .pndng(pndng),
+        .push(push),
+        .pop(pop)
     );
 
     initial begin
@@ -34,7 +40,7 @@ module simbus;
     always #1 clk=~clk;
     always@ (posedge clk)begin
         $display("prueba de funcionamiento");
-        $display("Reloj: %g", clk);
+        $monitor("Reloj: %g", clk);
         prueba();
     end
 
