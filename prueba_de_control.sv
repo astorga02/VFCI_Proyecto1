@@ -5,14 +5,14 @@
 `define DRIVERS 2
 `define PCKG 16
 `define BROD 16
-'include bs_gnrtr_n_rbtr
+`include "bs_gnrtr_n_rbtr"
 
 
 module simbus;
 
     //entradas
     reg clk; //reloj del DUT
-    reg rst; //reset del DUT
+    reg reset; //reset del DUT
 
 
     //salidas
@@ -25,24 +25,26 @@ module simbus;
     );
 
     initial begin
-        $dumpfile(grafica.vcd);
-        $dumpfile(2, uut);
+        $dumpfile("dump.vcd");
+        $dumpfile(uut);
         clk = 0;
-        rst = 0;
+        reset = 0;
     end
 
     always #1 clk=~clk;
     always@ (posedge clk)begin
+        $display("prueba de funcionamiento");
+        $display("Reloj: %g", clk);
         prueba();
     end
 
     task prueba();
-        $display("prueba de funcionamiento");
-        $display("Reloj: %g", clk);
+        
         
         if ($time > 10)begin
         $display("Prueba: Tiempo límite de prueba en el test_bench alcanzado");
         $finish;
+        end
     endtask
 
 endmodule
