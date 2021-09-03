@@ -55,9 +55,20 @@ module simbus;
         int dato_out2, full2, empty2, rd2, wn2, c2;
         for (int c = 0; c < 10 ; c++) begin
             c2 = c + 23;
+            wn2 = 1;
+            rd2 = 0;
             fifo(c2, rd2, wn2, dato_out2, full2, empty2);
             $display ("Entrada de datos");
-            $monitor ("Dato numero: %g, Dato: %g", c, c2);
+          $display ("Dato numero: %0d, Dato: %0d", c, c2);
+        end
+        
+        for (int c = 0; c < 10 ; c++) begin
+            c2 = c + 23;
+            wn2 = 0;
+            rd2 = 1;
+            fifo(c2, rd2, wn2, dato_out2, full2, empty2);
+          $display ("Salida de datos");
+          $display ("Dato numero: %0d, Dato: %0d", c, dato_out2);
         end
         
         if ($time > 20)begin
@@ -68,15 +79,14 @@ module simbus;
 
 /////// Declaración de la FIFO en software del sistema ////////
 
-    task fifo(input int dato_in, rd, wn, output dato_out, full, empty);
-        queue[$] = {};
+  task fifo(input int dato_in, rd, wn, output int dato_out, full, empty);
+        int queue[$] = {};
         if (wn == 1 && rd == 0)begin
             queue.push_front(dato_in);
         end
-        if (wn = 0 && rd == 1)begin
-            dato_out = queue.pop_front(dato_in);
+      if (wn == 0 && rd == 1)begin
+            dato_out = queue.pop_back;
         end
     endtask
-
 
 endmodule
