@@ -24,6 +24,11 @@ module tb;
   parameter tam_fifo = 12;
   parameter broadcast = {8{1'b1}};
 
-
+  // variables y registros necesarios para la prueba //
+  reg clk;
+  int ancho_banda;
+  int retraso_promedio;
+  int resultado[0:dispositivos];
+  int buffer[0:dispositivos];
 
 endmodule
