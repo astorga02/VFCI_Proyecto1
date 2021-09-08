@@ -21,6 +21,7 @@ module simbus;
     wire  pop [`BITS-1:0][`DRIVERS-1:0];
     reg [`PCKG-1:0] D_pop [`BITS-1:0][`DRIVERS-1:0];
     wire  [`PCKG-1:0] D_push [`BITS-1:0][`DRIVERS-1:0];
+    
     /*wire bs_rqst;
     wire bus;
     wire bs_bsy;*/
