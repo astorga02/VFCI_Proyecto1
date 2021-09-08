@@ -1,6 +1,27 @@
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
  // Driver/Monitor: este objeto es responsable de la interacción entre el ambiente y el la fifo bajo prueba //
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Inico del modulo para definir la FIFO virtual para el driver del ambiente //
+
+class Fifo #(parameter tama_de_paquete);
+  bit [tama_de_paquete-1:0]D_pop;
+  bit [tama_de_paquete-1:0]D_push;
+  bit [tama_de_paquete-1:0]queue[$];
+  
+  task pop(output bit [tama_de_paquete-1:0] D_pop);
+    if (q.size()!=0)
+      begin
+		D_pop=q.pop_front;
+      end
+    this.tamano=q.size();
+
+  endtask
+endclass
+
+
+
   class driver #(parameter width =16);
     virtual fifo_if #(.width(width))vif;
     trans_fifo_mbx agnt_drv_mbx;
