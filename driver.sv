@@ -18,6 +18,14 @@ class Fifo #(parameter tama_de_paquete);
     this.tamano=q.size();
 
   endtask
+
+    task push (input bit [tama_de_paquete-1:0]D_push);
+    
+  endtask
+
+endclass
+
+
 endclass
 
 
@@ -73,7 +81,7 @@ endclass
 	     transaction.print("Driver: Transaccion ejecutada");
 	   end
 	  default: begin
-	    $display("[%g] Driver Error: la transacción recibida no tiene tipo valido",$time);
+	    $display("[%g] Driver: Error: la transacción recibida invalida",$time);
 	    $finish;
 	  end 
 	endcase    
