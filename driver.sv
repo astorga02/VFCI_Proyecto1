@@ -20,6 +20,17 @@ class Fifo #(parameter tama_de_paquete);
   endtask
 
     task push (input bit [tama_de_paquete-1:0]D_push);
+    if (q.size>this.maximo)
+      begin
+        q.push_front(D_push);
+        q.delete(0);
+      end
+    else 
+      begin
+        q.push_front(D_push);
+      end
+    
+    this.tamano=q.size;
     
   endtask
 
