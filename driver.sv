@@ -39,12 +39,12 @@ endclass
         vif.rst = 0;
         vif.pop = 0;
         vif.dato_in = 0;
-        $display("[%g] el Driver espera por una transacción",$time);
+        $display("[%g] Driver esperando una transacción",$time);
         espera = 0;
         @(posedge vif.clk);
         agnt_drv_mbx.get(transaction);
         transaction.print("Driver: Transaccion recibida");
-        $display("Transacciones pendientes en el mbx agnt_drv = %g",agnt_drv_mbx.num());
+        $display("Driver: Transacciones pendientes  = %g", agnt_drv_mbx.num());
 
         while(espera < transaction.retardo)begin
           @(posedge vif.clk);
@@ -58,13 +58,13 @@ endclass
 	     @(posedge vif.clk);
 	     vif.pop = 1;
 	     drv_chkr_mbx.put(transaction);
-	     transaction.print("Driver: Transaccion ejecutada");
+	     transaction.print("Driver: Transaccion de lectura");
 	   end
 	   escritura: begin
 	     vif.push = 1;
 	     transaction.tiempo = $time;
 	     drv_chkr_mbx.put(transaction); 
-	     transaction.print("Driver: Transaccion ejecutada");
+	     transaction.print("Driver: Transaccion de escritura");
 	   end
 	   reset: begin
 	     vif.rst =1;
