@@ -17,4 +17,12 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
     mailbox generador_al_agente;
     tipos_de_transaccion tipo_llenado = caso;
 
+task run();
+    case(tipo_llenado)
+        llenado_aleatorio: 
+          begin 
+            $display("t = %0t Generador: Se ha escogido la transaccion de llenado aleatorio", $time);
+          end
+    endcase
+  endtask
 endclass
