@@ -15,7 +15,7 @@ class Fifo #(parameter tama_de_paquete);
       begin
 		D_pop=q.pop_front;
       end
-    this.tamano=q.size();
+    this.tamano=queue.size();
 
   endtask
 
