@@ -23,6 +23,10 @@ task run();
           begin 
             $display("t = %0t Generador: Se ha escogido la transaccion de llenado aleatorio", $time);
           end
+        llenado_especifico: //genera una transaccion con algunos datos especificos
+          begin
+            $display("t = %0t Generador: Se ha escogido la transaccion de llenado especifico", $time);
+          end
     endcase
   endtask
 endclass
