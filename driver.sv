@@ -11,7 +11,7 @@ class Fifo #(parameter tama_de_paquete);
   bit [tama_de_paquete-1:0]queue[$];
   
   task pop(output bit [tama_de_paquete-1:0] D_pop);
-    if (q.size()!=0)
+    if (queue.size()!=0)
       begin
 		D_pop=q.pop_front;
       end
@@ -20,17 +20,17 @@ class Fifo #(parameter tama_de_paquete);
   endtask
 
     task push (input bit [tama_de_paquete-1:0]D_push);
-    if (q.size>this.maximo)
+    if (queue.size>this.maximo)
       begin
-        q.push_back(D_push);
-        q.delete(0);
+        queue.push_back(D_push);
+        queue.delete(0);
       end
     else 
       begin
-        q.push_back(D_push);
+        queue.push_back(D_push);
       end
     
-    this.tamano=q.size;
+    this.tamano=queue.size;
     
   endtask
 
