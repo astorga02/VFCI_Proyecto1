@@ -7,6 +7,6 @@
 //    Específica: en este tipo se generan trasacciones semi específicas para casos esquina      // 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-class agent #(parameter tama_de_paquete,controladores,caso,opcion);
+class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,broadcast);
   
 endclass

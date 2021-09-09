@@ -41,7 +41,7 @@ endclass
 
 
 
-  class driver #(parameter width =16);
+  class Driver #(parameter width = 16);
     virtual fifo_if #(.width(width))vif;
     trans_fifo_mbx agnt_drv_mbx;
     trans_fifo_mbx drv_chkr_mbx;    
