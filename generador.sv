@@ -7,6 +7,14 @@
 //    Específica: en este tipo se generan trasacciones semi específicas para casos esquina      // 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+typedef enum{llenado_aleatorio, llenado_especifico} tipos_de_transaccion;
+
+
+typedef enum {ceros, unos, ceroyunos, direccion_incorrecta, broadcasttt} cas_esq;
+
+
 class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,broadcast);
-  
+    mailbox generador_al_agente;
+    tipos_de_transaccion tipo_llenado = caso;
+
 endclass
