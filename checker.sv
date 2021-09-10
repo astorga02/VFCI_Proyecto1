@@ -13,7 +13,10 @@ class Checker#(parameter tama_de_paquete,message,broadcast,controladores,caso,op
   	string pa_la_hoja;
   	real tiempo_simulacion;
   	int cajon2[$];
-  	int t,tiempo_envio,sumat,buffer;
+  	int t;
+    int tiempo_envio;
+    int sumat;
+    int buffer;
   	int counter[0:controladores];
   	int colaDispo [0:controladores-1][0:message-1];
   
