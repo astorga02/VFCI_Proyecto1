@@ -11,6 +11,12 @@ module tb;
   parameter tama_de_paquete = 16; 
   parameter tam_fifo = 12;
   parameter caso = llenado_aleatorio;
+  reg clk;
 
+
+  initial begin
+    $dumpvars(0,bs_gnrtr_n_rbtr);
+    $dumpfile("dump.vcd");
+  end
   
 endmodule
