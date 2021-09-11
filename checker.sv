@@ -15,7 +15,7 @@ class checker #(parameter tama_de_paquete,message,broadcast,controladores,caso,o
   string pa_la_hoja;
   real tiempo_simulacion;
   int counter[0:controladores];
-  
+  int contador;
 
   task sumador_de_mensajes();
     for (int i=0;i<message;i++)begin
@@ -24,7 +24,7 @@ class checker #(parameter tama_de_paquete,message,broadcast,controladores,caso,o
     end
   endtask
 
-
+  contador = 0;
 
 
   task run();
@@ -35,10 +35,10 @@ class checker #(parameter tama_de_paquete,message,broadcast,controladores,caso,o
       $display("t = %0t Checker: Se han obtenido los mensajes del generador",$time);
 
       forever begin
-        
+        contador = contador + 1;
+        monitor_al_checker.get(del_monitor);
 
-
-       end
+      end
 
   endtask
 
