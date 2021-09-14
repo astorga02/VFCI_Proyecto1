@@ -21,9 +21,20 @@ class Bus_trans#(parameter tama_de_paquete,controladores,caso,opcion);
   randc bit [tama_de_paquete-9:0] contenido;
   rand bit [tama_de_paquete-1:tama_de_paquete-8] destino;
   rand bit [2:0] delay;
+  rand int numero_fifo;
+
+  constraint item {0<=numero_fifo;numero_fifo<=controladores-1;destino!=numero_fifo;}
 
 
 endclass
+
+
+class TB_trans#(parameter tama_de_paquete);
+  int numero_fifo;
+  int retraso;
+
+endclass
+
 
 
 
