@@ -2,24 +2,24 @@
 
 
 class Agente#(parameter tama_de_paquete,controladores,caso,opcion);
+  event agen_listo;
+  mailbox generador_al_agente;
   mailbox agente_al_driver;
   mailbox agente_al_checker;
-  mailbox generador_al_agente;
-  Bus_trans #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) mensaje;
+  trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) mensaje;
   
-  task run();
+  task run();//genero el task donde corre el agente
     mensaje=new;
-    forever begin
+    forever begin//esto corre una y otra vez
       generador_al_agente.get(mensaje);
-      $display("t = %0tAgente: Transacción ha llegado al agente",$time);
-      mensaje.D_pop={mensaje.destino,mensaje.contenido};
-      $display ("t = %0tAgente: Contenido de la transacción: Numero de Fifo=%0d,Mensaje %0d",$time,mensaje.numero_fifo,mensaje.D_pop);
-      agente_al_driver.put(mensaje);
-      $display("t = %0tAgente: Transacción enviada al Driver",$time);
+      $display("t = %0t Agente: Transacción ha llegado al agente",$time);
+      mensaje.D_push={mensaje.destino,mensaje.contenido};
+      $display ("t = %0t Agente: Contenido de la transacción: numero de la FIFO = %0d, Mensaje: %0d",$time,mensaje.numero_fifo,mensaje.D_push);
       agente_al_checker.put(mensaje);
-      $display("t = %0tAgente: Transacción enviada al Checker",$time);
+      $display("t = %0t Agente: Transacción enviada al Checker",$time);
+      agente_al_driver.put(mensaje);
+      $display("t = %0t Agente: Transacción enviada al Driver",$time);
+      -> agen_listo;
       end
   endtask
-
-
 endclass
