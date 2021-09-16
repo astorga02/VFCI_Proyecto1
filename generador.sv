@@ -7,61 +7,86 @@
 //    Específica: en este tipo se generan trasacciones semi específicas para casos esquina      // 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-typedef enum{llenado_aleatorio, llenado_especifico} tipos_de_transaccion;
-
-
-typedef enum {ceros, unos, ceroyunos, direccion_incorrecta, broadcasttt} cas_esq;
-
-
 class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,broadcast);
-    mailbox generador_al_agente;
-    tipos_de_transaccion tipo_llenado = caso;
-
-task run();
+  mailbox generador_al_agente;
+  event agen_listo;
+  tipos_de_transaccion tipo_llenado=caso;
+  cas_esq caso_de_esquina = opcion;
+  
+  
+  task run();
     case(tipo_llenado)
         llenado_aleatorio: 
           begin 
             $display("t = %0t Generador: Se ha escogido la transaccion de llenado aleatorio", $time);
+            for (int i = 0; i < message; i++) begin
+              trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) valor1;
+              valor1 = new;
+               valor1.randomize();
+              valor1.item1.constraint_mode(0);
+              for ( int h=0; h < valor1.delay;h++)
+                      begin
+                        #1ns;
+                      end
+              
+              generador_al_agente.put(valor1);
+              @(agen_listo);
+                end
+            $display ("t = %0t Generador: Generados los %0d mensajes", $time, message);
           end
-        llenado_especifico: //genera una transaccion con algunos datos especificos
+        
+        llenado_especifico:
           begin
             $display("t = %0t Generador: Se ha escogido la transaccion de llenado especifico", $time);
             for (int i = 0; i < message; i++) begin
-              trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) valor; //creamos una nueva transacción
-              valor = new;
-              valor.randomize();
-              case (caso_de_esquina)//en el case se asignan algunos valores que no sean aleatorios, dependiendo del caso elegido
+              trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) valor2; 
+              valor2 = new;
+              valor2.randomize();
+              case (caso_de_esquina)
                 ceros:
                   begin
                     $display("t = %0t Ambiente: Se ha escogido el caso de opcion con un contenido de ceros", $time);
-            		valor.contenido = {8{1'b0}};
+            		valor2.contenido = {8{1'b0}}; // 0
                   end
 
         	    unos:
           		  begin
             		$display("t = %0t Ambiente: Se ha escogido el caso de opcion con un contenido de unos", $time);
-            		valor.contenido = 8'b11111111;
+            		valor2.contenido = 8'b11111111; // 255
           		  end
 
         		ceroyunos:
           		  begin
-            		$display("t = %0t Ambiente: Se ha escogido el caso de opcion con un contenido de ceros y unos", $time);
-            		valor.contenido= 8'b01010101;
-          		  end
+            		$display("t = %0t Ambiente: Se ha escogido el caso de opcion con un contenido de ceros-unos", $time);
+            		valor2.contenido= 8'b01010101;
+          		 
+                  end
 
         		direccion_incorrecta:
           		 begin
             		$display("t = %0t Ambiente: Se ha escogido el caso de opcion con una direccion incorrecta", $time);
+                   valor2.item1.constraint_mode(1);
+                   valor2.numero_fifo = valor2.destino + valor2.numero_fifo;
           		 end
         
         		broadcasttt:
           		  begin
-            		$display("t = %0t Ambiente: Se ha escogido mandar mensajes con broadcast", $time);
-            		valor.destino=broadcast;
+            		$display("t = %0t Ambiente: Se ha escogido mandar mensajes con broadcast",$time);
+            		valor2.destino=broadcast;
           		  end
         
+        		
+        
       		endcase
-         
+              for ( int h=0; h<valor2.delay;h++)
+                      begin
+                        #1ns;
+                      end
+                  $display ("t = %0t Generador: Loop:%0d/%0d create next valor", $time, i+1, message);
+              	generador_al_agente.put(valor2);
+                  @(agen_listo);
+              end
+            $display ("t = %0t Generador: Lista la creacion y envio de los mensajes al driver y al checker", $time, message);
           end
     endcase
   endtask
