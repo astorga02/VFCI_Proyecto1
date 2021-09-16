@@ -10,7 +10,7 @@ class checker #(parameter tama_de_paquete,message,broadcast,controladores,caso,o
   bit [tama_de_paquete-1:tama_de_paquete-8] suma_mensajes [message];
   bit [tama_de_paquete-9:0]cajon1[$];
   int tiempo_envio;
-  string mensaje;
+  
   string pa_la_hoja;
   real tiempo_simulacion;
   int counter[0:controladores];
@@ -35,7 +35,17 @@ class checker #(parameter tama_de_paquete,message,broadcast,controladores,caso,o
     $display("t = %0t Checker: iniciado el proceso",$time);
       del_monitor=new;
       del_agente=new;
-      sumador_de_mensajes();
+      
+    
+      for (int i=0;i<message;i++)begin
+        agente_al_checker.get(del_agente);
+        suma_mensajes[i] = del_agente.contenido;
+      end
+
+
+
+
+
       $display("t = %0t Checker: Se han obtenido los mensajes del generador",$time);
 
       forever begin
@@ -65,12 +75,30 @@ class checker #(parameter tama_de_paquete,message,broadcast,controladores,caso,o
         if(copia_de_seguridad.size == 0)
           begin
           $display("t = %0t Checker: El contenido del mensaje es incorrecto",$time);
+          tiempo_simulacion = $time;
           end
         else 
           $display("t = %0t Checker: El contenido del mensaje es correcto", $time);
 
+
+
       end
 
   endtask
+  string atraso_csv;
+  string llegada_csv;
+  string envio_csv;
+  string mensaje;
+  string dispositivo_csv;
+  task envio_a_la_hoja();
+    mensaje.hextoa(del_monitor.D_push);
+    dispositivo_csv.itoa(del_monitor.numero_fifo);
+    atraso_csv.itoa(ttime);
+    llegada_csv.itoa(del_monitor.retraso);
+    envio_csv.itoa(tiempo_envio);
+    pa_la_hoja = {dspstv,",",mensaje,",",sndng,",",arrvng,",",rts};
+    $system($sformatf("echo %0s >> simulacion.csv", pa_la_hoja));
+  endtask
+
 
 endclass 
