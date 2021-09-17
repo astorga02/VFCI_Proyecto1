@@ -70,7 +70,7 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
         		broadcasttt:
           		  begin
             		$display("t = %0t Ambiente: Se ha escogido mandar mensajes con broadcast",$time);
-            		valor2.destino=broadcast;
+            		valor2.contenido=broadcast;
           		  end
         
         
