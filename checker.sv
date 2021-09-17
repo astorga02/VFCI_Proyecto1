@@ -33,7 +33,7 @@ class checker #(parameter width=16, parameter depth =8);
              to_sb.tiempo_pop = transaccion.dato;
              to_sb.completado = 1;
              to_sb.calc_latencia();
-             to_sb.print("Checker:Transaccion Completada");
+             to_sb.print("Checker: Transaccion Completada");
              chkr_sb_mbx.put(to_sb);
            end else begin
              transaccion.print("Checker: Error el dato de la transacción no calza con el esperado");
