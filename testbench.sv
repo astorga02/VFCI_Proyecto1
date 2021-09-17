@@ -16,6 +16,7 @@ module tb;
   parameter message = 100;
   parameter tam_fifo = 8;
   parameter broadcast = 145;
+  parameter destino = 1; 
   
   
   reg clk;

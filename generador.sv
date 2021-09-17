@@ -74,7 +74,7 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
           		  end
             un_dispo:
                 begin
-                  valor2.numero_fifo = 0;
+                  valor2.numero_fifo = tb.destino;
                   $display("t = %0t Ambiente: Se ha escogido aleatorizar el uso del reset",$time);
                 end
         
