@@ -1,8 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ambiente: este módulo es el encargado de conectar todos los elementos del ambiente para que puedan ser usados por el test //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Inico del modulo para definir el ambiente //
+
 class Ambiente#(parameter tama_de_paquete, controladores,BITS,message,tam_fifo,broadcast,caso,opcion);
-  Generador #(.message(message),.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion),.broadcast(broadcast)) generador_instancia;//instancio los manejadores de cada clase del TB
+  Generador #(.message(message),.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion),.broadcast(broadcast)) generador_instancia;
   Agente #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) agente_instancia;
   Monitor #(.controladores(controladores),.tam_fifo(tam_fifo),.BITS(BITS),.tama_de_paquete(tama_de_paquete)) monitor_instancia;
   Driver #(.controladores(controladores),.tam_fifo(tam_fifo),.BITS(BITS),.tama_de_paquete(tama_de_paquete),.caso(caso),.opcion(opcion)) controlador_instancia;
@@ -14,6 +16,7 @@ class Ambiente#(parameter tama_de_paquete, controladores,BITS,message,tam_fifo,b
   mailbox driver_al_checker;
   event agen_listo;
   virtual Int_fifo #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.BITS(BITS))interfaz_fifo;
+ 
   
   function new();
     generador_al_agente=new();
@@ -38,7 +41,6 @@ class Ambiente#(parameter tama_de_paquete, controladores,BITS,message,tam_fifo,b
     checker_instancia.agen_listo=agen_listo; 
   endfunction
   
-  
   task run();
     
     monitor_instancia.interfaz_fifo = interfaz_fifo;
@@ -53,3 +55,5 @@ class Ambiente#(parameter tama_de_paquete, controladores,BITS,message,tam_fifo,b
   endtask
   
 endclass
+
+    // Fin del modulo para definir el ambiente //

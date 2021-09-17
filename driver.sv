@@ -2,7 +2,6 @@
  // Driver/Monitor: este objeto es responsable de la interacción entre el ambiente y el la fifo bajo prueba //
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 // Inico del modulo para definir la FIFO virtual para el driver del ambiente //
 
 class Fifo #(parameter tama_de_paquete);
@@ -42,7 +41,6 @@ class Fifo #(parameter tama_de_paquete);
     this.tamano = queue.size;
   endtask
 endclass
-
 
 
 class Driver#(parameter controladores,tam_fifo,BITS,tama_de_paquete,caso,opcion);
@@ -101,3 +99,4 @@ class Driver#(parameter controladores,tam_fifo,BITS,tama_de_paquete,caso,opcion)
   endtask
 endclass
 
+    // Fin del modulo para definir el bloque del driver del ambiente //
