@@ -2,25 +2,22 @@
 int arrayglobal [$];
 
 class Checker#(parameter tama_de_paquete,message,broadcast,controladores,caso,opcion);
-    mailbox monitor_al_checker; 
-    mailbox agente_al_checker;
-  	trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) del_agente;
-  	trans_salida_DUT  #(.tama_de_paquete(tama_de_paquete))del_monitor;
-  	event agen_listo;
+  mailbox monitor_al_checker; 
+  mailbox agente_al_checker;
+  trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) del_agente;
+  trans_salida_DUT  #(.tama_de_paquete(tama_de_paquete))del_monitor;
+  event agen_listo;
   bit [tama_de_paquete-1:0] suma_mensajes [message];
   bit [tama_de_paquete-1:0] estructura_payload [3][message];
-  
+  int repositorio_de_mensajes[$];
+  int ttime,tiempo_envio,suma_tiempos,control_de_tiempos;
+  string mensaje,retraso_por_dispositivo,atraso_csv,llegada_csv,envio_csv;
+  string pa_la_hoja;
+  real tiempo_simulacion;
+  int retraso_por_dispositivo[0:controladores];
+  int retrasos_dispositivo [0:controladores-1][0:message-1];
   int prueba=0;
-  
-  	int repositorio_de_mensajes[$];
-  	int ttime,tiempo_envio,suma_tiempos,control_de_tiempos;
-  	string mensaje,retraso_por_dispositivo,atraso_csv,llegada_csv,envio_csv;
-  	string pa_la_hoja;
-  	real tiempo_simulacion;
-  	int retraso_por_dispositivo[0:controladores];
-    int retrasos_dispositivo [0:controladores-1][0:message-1];
-  
-  int contador = 0;
+  int contador;
   
     task run();
       $display("t = %0t Checker: iniciado el proceso",$time);
@@ -56,7 +53,8 @@ class Checker#(parameter tama_de_paquete,message,broadcast,controladores,caso,op
         retraso_por_dispositivo[del_monitor.numero_fifo]++;
         retrasos_dispositivo[del_monitor.numero_fifo][retraso_por_dispositivo[del_monitor.numero_fifo]] = ttime;
         #1if (del_monitor.D_pop[tama_de_paquete-1:0] == broadcast) begin 
-          $display("t = %0t Checker: Mensaje enviado por broadcast",$time); end
+        $display("t = %0t Checker: Mensaje enviado por broadcast",$time); end
+        contador = 0;
         #1for (int i=0;i<message;i++)begin
           if (estructura_payload[2][i] == del_monitor.numero_fifo)begin
             if (estructura_payload[1][i] == del_monitor.D_pop[tama_de_paquete-1:0])begin
@@ -68,9 +66,11 @@ class Checker#(parameter tama_de_paquete,message,broadcast,controladores,caso,op
               estructura_payload[1][i] = 0;
               estructura_payload[2][i] = 0;
               envio_a_la_hoja();
+              contador ++;
             end 
           end 
         end
+        if (contador == 0) $display("El destino del mensaje es incorrecto");
        end
       tiempo_simulacion=$time;
     endtask
