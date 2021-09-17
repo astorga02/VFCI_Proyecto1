@@ -1,0 +1,9 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ // Driver/Monitor: este objeto es responsable de la interacción entre el ambiente y el la fifo bajo prueba //
+ /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Inico del modulo para definir el bloque del monitor del ambiente //
+
+class Monitor#(parameter controladores,tam_fifo,BITS,tama_de_paquete);
+  
+endclass
+    // Fin del modulo para definir el bloque del monitor del ambiente //
