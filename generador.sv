@@ -73,21 +73,6 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
             		valor2.destino=broadcast;
           		  end
         
-        		cero_lejos:
-          		 begin
-            		$display("t = %0t Ambiente: Se ha escogido mandar mensajes con ceros a dispositivo más lejano",$time);
-            		valor2.destino=controladores-1;
-            		valor2.contenido=8'b00000000;
-            		valor2.numero_fifo=0;
-          		 end
-        
-        		uno_cerca:
-          		 begin
-            		$display("t = %0t Ambiente: Se ha escogido mandar mensajes con unos a un dispositivo adyacente",$time);
-            		valor2.destino=controladores-1;
-            		valor2.contenido=8'b11111111;
-            		valor2.numero_fifo=controladores-2;
-          		 end
         
       		endcase
               for ( int h=0; h<valor2.delay;h++)
