@@ -79,7 +79,6 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
                       begin
                         #1ns;
                       end
-                  $display ("t = %0t Generador: Loop:%0d/%0d create next valor", $time, i+1, message);
               	generador_al_agente.put(valor2);
                   @(agen_listo);
               end
