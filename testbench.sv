@@ -8,14 +8,12 @@
 
 //  Modulo para prueba  //
 module tb;
-
-
   parameter tama_de_paquete = 8; 				 
   parameter caso = llenado_aleatorio;
   parameter opcion = direccion_incorrecta; 	
-  parameter dispositivos = 5;
+  parameter dispositivos = 16;
   parameter BITS = 8;
-  parameter message = 10;
+  parameter message = 100;
   parameter tam_fifo = 8;
   parameter broadcast = 145;
   
@@ -42,7 +40,7 @@ module tb;
     ambiente_instancia.interfaz_fifo = interfaz_fifo;
     ambiente_instancia.run();
     
-    #150000 
+    #1500000 
     ancho_banda=(message*tama_de_paquete*1000)/ambiente_instancia.checker_instancia.tiempo_simulacion; 
     retraso_promedio=ambiente_instancia.checker_instancia.suma_tiempos/ambiente_instancia.checker_instancia.contador;
     $display ("Tiempo de simulación: %0d", ambiente_instancia.checker_instancia.tiempo_simulacion);
@@ -87,7 +85,7 @@ task lector_csv();
     te.itoa(tiempo_envio[i]);
     at.itoa(atraso[i]);
     pa_la_hoja = {dis,",",ms,",",te,",",tl,",",at};
-    $system($sformatf("echo %0s >> simulacion.csv", pa_la_hoja));
+    $system($sformatf("echo %0s >> simulacion2.csv", pa_la_hoja));
   end
 
   for (int i = 0; i < tb.dispositivos; i++) begin

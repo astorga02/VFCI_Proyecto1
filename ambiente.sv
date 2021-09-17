@@ -1,55 +1,57 @@
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ambiente: este módulo es el encargado de conectar todos los elementos del ambiente para que puedan ser usados por el test //
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class ambiente #(parameter width =16, parameter depth = 8);
-  // Declaración de los componentes del ambiente
-  driver #(.width(width)) driver_inst;
-  checker #(.width(width),.depth(depth)) checker_inst;
-  score_board #(.width(width)) scoreboard_inst;
-  agent #(.width(width),.depth(depth)) agent_inst;
+    // Inico del modulo para definir el ambiente //
+
+class Ambiente#(parameter tama_de_paquete, controladores,BITS,message,tam_fifo,broadcast,caso,opcion);
+  Generador #(.message(message),.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion),.broadcast(broadcast)) generador_instancia;//instancio los manejadores de cada clase del TB
+  Agente #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) agente_instancia;
+  Monitor #(.controladores(controladores),.tam_fifo(tam_fifo),.BITS(BITS),.tama_de_paquete(tama_de_paquete)) monitor_instancia;
+  Driver #(.controladores(controladores),.tam_fifo(tam_fifo),.BITS(BITS),.tama_de_paquete(tama_de_paquete),.caso(caso),.opcion(opcion)) controlador_instancia;
+  Checker #(.tama_de_paquete(tama_de_paquete),.message(message),.broadcast(broadcast),.controladores(controladores),.caso(caso),.opcion(opcion)) checker_instancia;
+  mailbox generador_al_agente;
+  mailbox agente_al_driver;
+  mailbox monitor_al_checker;
+  mailbox agente_al_checker;
+  mailbox driver_al_checker;
+  event agen_listo;
+  virtual Int_fifo #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.BITS(BITS))interfaz_fifo;
+ 
   
-  // Declaración de la interface que conecta el DUT 
-  virtual fifo_if  #(.width(width)) _if;
-
-  //declaración de los mailboxes
-  trans_fifo_mbx agnt_drv_mbx;           //mailbox del agente al driver
-  trans_fifo_mbx drv_chkr_mbx;           //mailbox del driver al checher
-  trans_sb_mbx chkr_sb_mbx;              //mailbox del checker al scoreboard
-  comando_test_sb_mbx test_sb_mbx;       //mailbox del test al scoreboard
-  comando_test_agent_mbx test_agent_mbx; //mailbox del test al agente
-
   function new();
-    // Instanciación de los mailboxes
-    drv_chkr_mbx   = new();
-    agnt_drv_mbx   = new();
-    chkr_sb_mbx    = new();
-    test_sb_mbx    = new();
-    test_agent_mbx = new();
-
-    // instanciación de los componentes del ambiente
-    driver_inst     = new();
-    checker_inst    = new();
-    scoreboard_inst = new();
-    agent_inst      = new();
-    // conexion de las interfaces y mailboxes en el ambiente
-    driver_inst.vif             = _if;
-    driver_inst.drv_chkr_mbx    = drv_chkr_mbx;
-    driver_inst.agnt_drv_mbx    = agnt_drv_mbx;
-    checker_inst.drv_chkr_mbx   = drv_chkr_mbx;
-    checker_inst.chkr_sb_mbx    = chkr_sb_mbx;
-    scoreboard_inst.chkr_sb_mbx = chkr_sb_mbx;
-    scoreboard_inst.test_sb_mbx = test_sb_mbx;
-    agent_inst.test_agent_mbx   = test_agent_mbx;
-    agent_inst.agnt_drv_mbx = agnt_drv_mbx;
+    generador_al_agente=new();
+    agente_al_driver=new();
+    agente_al_checker=new();
+    monitor_al_checker=new();
+    generador_instancia=new;
+    generador_instancia.generador_al_agente = generador_al_agente;
+    agente_instancia=new;
+    agente_instancia.generador_al_agente = generador_al_agente;
+    agente_instancia.agente_al_driver=agente_al_driver;
+    agente_instancia.agente_al_checker=agente_al_checker;
+    monitor_instancia=new;
+    monitor_instancia.monitor_al_checker=monitor_al_checker;
+    generador_instancia.agen_listo=agen_listo;
+    agente_instancia.agen_listo=agen_listo;
+    controlador_instancia=new();
+    controlador_instancia.agente_al_driver=agente_al_driver;
+    checker_instancia=new();
+    checker_instancia.monitor_al_checker=monitor_al_checker;
+    checker_instancia.agente_al_checker=agente_al_checker;
+    checker_instancia.agen_listo=agen_listo; 
   endfunction
-
-  virtual task run();
-    $display("[%g]  El ambiente fue inicializado",$time);
+  
+  
+  task run();
+    
+    monitor_instancia.interfaz_fifo = interfaz_fifo;
+    controlador_instancia.interfaz_fifo=interfaz_fifo;
     fork
-      driver_inst.run();
-      checker_inst.run();
-      scoreboard_inst.run();
-      agent_inst.run();
+      generador_instancia.run();
+      agente_instancia.run();
+      controlador_instancia.run();
+      monitor_instancia.run();
+      checker_instancia.run();
     join_none
-  endtask 
+  endtask
+  
 endclass
+
+    // Fin del modulo para definir el ambiente //
