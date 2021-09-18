@@ -1,14 +1,14 @@
 // Inico del modulo para definir el bloque del checker del ambiente //
 int arrayglobal [$];
 
-class Checker#(parameter tama_de_paquete,message,broadcast,controladores,caso,opcion);
+class Checker#(parameter profundidad,message,broadcast,controladores,caso,opcion);
   mailbox monitor_al_checker; 
   mailbox agente_al_checker;
-  trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) del_agente;
-  trans_salida_DUT  #(.tama_de_paquete(tama_de_paquete))del_monitor;
+  trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) del_agente;
+  trans_salida_DUT  #(.profundidad(profundidad))del_monitor;
   event agen_listo;
-  bit [tama_de_paquete-1:0] suma_mensajes [message];
-  bit [tama_de_paquete-1:0] estructura_payload [3][message];
+  bit [profundidad-1:0] suma_mensajes [message];
+  bit [profundidad-1:0] estructura_payload [3][message];
   int repositorio_de_mensajes[$];
   int ttime,tiempo_envio,suma_tiempos,control_de_tiempos;
   string mensaje,retraso_por_dispositivo,atraso_csv,llegada_csv,envio_csv;
@@ -44,7 +44,7 @@ class Checker#(parameter tama_de_paquete,message,broadcast,controladores,caso,op
         #1monitor_al_checker.get(del_monitor);
         contador = contador + 1;
         #1del_monitor.print("Checker: Mensaje a revisar en el DUT:");
-        repositorio_de_mensajes=arrayglobal.find_index with (message==del_monitor.D_pop[tama_de_paquete-1:0]);
+        repositorio_de_mensajes=arrayglobal.find_index with (message==del_monitor.D_pop[profundidad-1:0]);
         tiempo_envio = repositorio_de_mensajes[0];
         arrayglobal[tiempo_envio]=0;
         ttime = del_monitor.retraso-tiempo_envio;
@@ -52,14 +52,14 @@ class Checker#(parameter tama_de_paquete,message,broadcast,controladores,caso,op
         suma_tiempos = control_de_tiempos+ttime;
         retraso_por_dispositivo[del_monitor.numero_fifo]++;
         retrasos_dispositivo[del_monitor.numero_fifo][retraso_por_dispositivo[del_monitor.numero_fifo]] = ttime;
-        #1if (del_monitor.D_pop[tama_de_paquete-1:0] == broadcast) begin 
+        #1if (del_monitor.D_pop[profundidad-1:0] == broadcast) begin 
         $display("t = %0t Checker: Mensaje enviado por broadcast",$time); end
         contador = 0;
         #1for (int i=0;i<message;i++)begin
           if (estructura_payload[2][i] == del_monitor.numero_fifo)begin
-            if (estructura_payload[1][i] == del_monitor.D_pop[tama_de_paquete-1:0])begin
+            if (estructura_payload[1][i] == del_monitor.D_pop[profundidad-1:0])begin
               $display("t = %0t Checker: El destino del mensaje es correcto. FIFO esperado = %0d, FIFO analizado = %0d", $time, estructura_payload[2][i], del_monitor.numero_fifo);
-                $display("t = %0t Checker: Contenido del mensaje  de esa FIFO es correcto. Dato esperado en esa FIFO = %0d, Dato analizado en esa FIFO = %0d", $time, estructura_payload[1][i], del_monitor.D_pop[tama_de_paquete-1:0]);
+                $display("t = %0t Checker: Contenido del mensaje  de esa FIFO es correcto. Dato esperado en esa FIFO = %0d, Dato analizado en esa FIFO = %0d", $time, estructura_payload[1][i], del_monitor.D_pop[profundidad-1:0]);
               $display (" /\\  /\\  /\\  /\\  /\\  /\\  /\\  /\\  /\\  /\\");
             	$display (" ||  ||  ||  ||  ||  ||  ||  ||  ||  || ");
             	$display (" - - - - - - - - -  - - - - - - - - - - ");

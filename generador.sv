@@ -1,5 +1,6 @@
 
-class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,broadcast);
+  // Generador //
+class Generador#(parameter message, profundidad,controladores,caso,opcion,broadcast);
   mailbox generador_al_agente;
   event agen_listo;
   tipos_de_transaccion tipo_llenado=caso;
@@ -8,20 +9,20 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
   
   task run();
     case(tipo_llenado)
-        llenado_aleatorio:
+        llenado_aleatorio: 
           begin 
             $display("t = %0t Generador: Se ha escogido la transaccion de llenado aleatorio", $time);
             for (int i = 0; i < message; i++) begin
-              trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) valor1;
-              valor1 = new;
-              valor1.randomize();
-              valor1.item1.constraint_mode(0);
-              for ( int h=0; h < valor1.delay;h++)
+              trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) instancia_entrada_DUT_1;//creamos una nueva transacción
+              instancia_entrada_DUT_1 = new;
+              instancia_entrada_DUT_1.randomize();
+              instancia_entrada_DUT_1.rest_num_fifo.constraint_mode(0);
+              for ( int h=0; h < instancia_entrada_DUT_1.delay;h++)
                       begin
                         #1ns;
                       end
               
-              generador_al_agente.put(valor1);
+              generador_al_agente.put(instancia_entrada_DUT_1);
               @(agen_listo);
                 end
             $display (" ||  ||  ||  ||  ||  ||  ||  ||  ||  || ");
@@ -33,24 +34,24 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
             $display (" ||  ||  ||  ||  ||  ||  ||  ||  ||  || ");
           end
         
-        llenado_especifico: 
+        llenado_especifico: //genera una transaccion con algunos datos especificos
           begin
             $display("t = %0t Generador: Se ha escogido la transaccion de llenado especifico", $time);
             for (int i = 0; i < message; i++) begin
-              trans_entrada_DUT #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) valor2; 
+              trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) valor2; 
               valor2 = new;
               valor2.randomize();
               case (caso_de_esquina)
                 ceros:
                   begin
                     $display("t = %0t Ambiente: Se ha escogido el caso de opcion con un contenido de ceros", $time);
-            		valor2.contenido = {8{1'b0}}; // 0
+            		valor2.contenido = {valor2.profundidad{1'b0}};
                   end
 
         	    unos:
           		  begin
             		$display("t = %0t Ambiente: Se ha escogido el caso de opcion con un contenido de unos", $time);
-            		valor2.contenido = 8'b11111111; // 255
+                    valor2.contenido = {valor2.profundidad{1'b1}};
           		  end
 
         		ceroyunos:
@@ -63,21 +64,21 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
         		direccion_incorrecta:
           		 begin
             		$display("t = %0t Ambiente: Se ha escogido el caso de opcion con una direccion incorrecta", $time);
-                   valor2.item1.constraint_mode(1);
+                   valor2.rest_num_fifo.constraint_mode(1);
                    valor2.numero_fifo = valor2.destino + valor2.numero_fifo;
           		 end
         
         		broadcasttt:
           		  begin
             		$display("t = %0t Ambiente: Se ha escogido mandar mensajes con broadcast",$time);
-            		valor2.contenido=broadcast;
+                    valor2.contenido=broadcast;
           		  end
-            un_dispo:
-                begin
-                  valor2.numero_fifo = tb.destino;
-                  $display("t = %0t Ambiente: Se ha escogido aleatorizar el uso del reset",$time);
-                end
         
+                un_dispo:
+                  begin
+                    valor2.numero_fifo = tb.destino;
+                    $display("t = %0t Ambiente: Se ha escogido enviar datos a un solo dispostivo, el dispositivo es el: %0d",$time, valor2.numero_fifo);
+                  end
         
       		endcase
               for ( int h=0; h<valor2.delay;h++)

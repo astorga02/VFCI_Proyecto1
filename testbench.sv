@@ -8,15 +8,15 @@
 
 //  Modulo para prueba  //
 module tb;
-  parameter tama_de_paquete = 8; 				 
-  parameter caso = llenado_aleatorio;
-  parameter opcion = direccion_incorrecta; 	
-  parameter dispositivos = 16;
-  parameter BITS = 8;
-  parameter message = 100;
-  parameter tam_fifo = 8;
+
+  parameter profundidad = 8; 				 
+  parameter caso = llenado_especifico;
+  parameter opcion = un_dispo; 	
+  parameter dispositivos = 5;
+  parameter BITS = 9;
+  parameter message = 5;
   parameter broadcast = 145;
-  parameter destino = 1; 
+  parameter destino = 2;
   
   
   reg clk;
@@ -31,9 +31,9 @@ module tb;
   end
   
   always #100 clk=~clk;
-  Int_fifo #(.tama_de_paquete(tama_de_paquete),.controladores(dispositivos),.BITS(BITS)) interfaz_fifo(clk);
+  Int_fifo #(.profundidad(profundidad),.controladores(dispositivos),.BITS(BITS)) interfaz_fifo(clk);
   bs_gnrtr_n_rbtr uut(.clk(clk),.reset(interfaz_fifo.reset),.pndng(interfaz_fifo.pndng),.push(interfaz_fifo.push),.pop(interfaz_fifo.pop),.D_pop(interfaz_fifo.D_pop),.D_push(interfaz_fifo.D_push));
-  Ambiente #(.tama_de_paquete(tama_de_paquete),.controladores(dispositivos),.BITS(BITS),.message(message),.tam_fifo(tam_fifo),.broadcast(broadcast),.caso(caso),.opcion(opcion)) ambiente_instancia;
+  Ambiente #(.profundidad(profundidad),.controladores(dispositivos),.BITS(BITS),.message(message),.broadcast(broadcast),.caso(caso),.opcion(opcion)) ambiente_instancia;
 
   initial begin
     {clk,interfaz_fifo.reset}<=0;
@@ -42,11 +42,11 @@ module tb;
     ambiente_instancia.run();
     
     #1500000 
-    ancho_banda=(message*tama_de_paquete*1000)/ambiente_instancia.checker_instancia.tiempo_simulacion; 
-    retraso_promedio=ambiente_instancia.checker_instancia.suma_tiempos/ambiente_instancia.checker_instancia.contador;
+    ancho_banda=(message*profundidad*1000)/ambiente_instancia.checker_instancia.tiempo_simulacion; //calculo el ancho de banda
+    retraso_promedio=ambiente_instancia.checker_instancia.suma_tiempos/ambiente_instancia.checker_instancia.contador;//calculo el retraso promedio total
     $display ("Tiempo de simulación: %0d", ambiente_instancia.checker_instancia.tiempo_simulacion);
-    $display("Ancho de banda: El ancho de banda total promedio fue de %0.1f x10^9 Hz,utilizando %0d dispositivos y una profundidad de Fifos de %0d",ancho_banda,dispositivos,tam_fifo);
-    $display("Retraso: El retraso promedio de los mensajes que fueron recibidos fue de %0.1f ns, utilizando %0d dispositivos y una profundidad de Fifo de %0d",retraso_promedio,dispositivos,tam_fifo);
+    $display("Ancho de banda: El ancho de banda total promedio fue de %0.1f x10^9 Hz,utilizando %0d dispositivos y una profundidad de Fifos de %0d",ancho_banda,dispositivos,profundidad);
+    $display("Retraso: El retraso promedio de los mensajes que fueron recibidos fue de %0.1f ns, utilizando %0d dispositivos y una profundidad de Fifo de %0d",retraso_promedio,dispositivos,profundidad);
     lector_csv();
     $finish;
   end

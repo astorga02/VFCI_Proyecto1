@@ -1,18 +1,18 @@
     // Inico del modulo para definir el ambiente //
 
-class Ambiente#(parameter tama_de_paquete, controladores,BITS,message,tam_fifo,broadcast,caso,opcion);
-  Generador #(.message(message),.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion),.broadcast(broadcast)) generador_instancia;//instancio los manejadores de cada clase del TB
-  Agente #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.caso(caso),.opcion(opcion)) agente_instancia;
-  Monitor #(.controladores(controladores),.tam_fifo(tam_fifo),.BITS(BITS),.tama_de_paquete(tama_de_paquete)) monitor_instancia;
-  Driver #(.controladores(controladores),.tam_fifo(tam_fifo),.BITS(BITS),.tama_de_paquete(tama_de_paquete),.caso(caso),.opcion(opcion)) controlador_instancia;
-  Checker #(.tama_de_paquete(tama_de_paquete),.message(message),.broadcast(broadcast),.controladores(controladores),.caso(caso),.opcion(opcion)) checker_instancia;
+class Ambiente#(parameter profundidad, controladores,BITS,message,broadcast,caso,opcion);
+  Generador #(.message(message),.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion),.broadcast(broadcast)) generador_instancia;
+  Agente #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) agente_instancia;
+  Monitor #(.controladores(controladores),.BITS(BITS),.profundidad(profundidad)) monitor_instancia;
+  Driver #(.controladores(controladores),.BITS(BITS),.profundidad(profundidad),.caso(caso),.opcion(opcion)) controlador_instancia;
+  Checker #(.profundidad(profundidad),.message(message),.broadcast(broadcast),.controladores(controladores),.caso(caso),.opcion(opcion)) checker_instancia;
   mailbox generador_al_agente;
   mailbox agente_al_driver;
   mailbox monitor_al_checker;
   mailbox agente_al_checker;
   mailbox driver_al_checker;
   event agen_listo;
-  virtual Int_fifo #(.tama_de_paquete(tama_de_paquete),.controladores(controladores),.BITS(BITS))interfaz_fifo;
+  virtual Int_fifo #(.profundidad(profundidad),.controladores(controladores),.BITS(BITS))interfaz_fifo;
  
   
   function new();
