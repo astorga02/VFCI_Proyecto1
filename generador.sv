@@ -72,10 +72,11 @@ class Generador#(parameter message, tama_de_paquete,controladores,caso,opcion,br
             		$display("t = %0t Ambiente: Se ha escogido mandar mensajes con broadcast",$time);
             		valor2.contenido=broadcast;
           		  end
+                
             un_dispo:
                 begin
                   valor2.numero_fifo = tb.destino;
-                  $display("t = %0t Ambiente: Se ha escogido aleatorizar el uso del reset",$time);
+                  $display("t = %0t Ambiente: Se ha escogido mandar muchos mensajes a un solo dispositivo",$time);
                 end
         
         
