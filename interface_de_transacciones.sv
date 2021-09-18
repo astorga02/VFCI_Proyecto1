@@ -1,6 +1,6 @@
 
 typedef enum{llenado_aleatorio,llenado_especifico} tipos_de_transaccion;
-typedef enum {ceros, unos, ceroyunos, direccion_incorrecta,broadcasttt,cero_lejos, uno_cerca} cas_esq;
+typedef enum {ceros, unos, ceroyunos, direccion_incorrecta,broadcasttt,un_dispo} cas_esq;
 typedef enum {total_mess} tot_mensajes;
 
 
