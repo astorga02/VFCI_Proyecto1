@@ -1,10 +1,10 @@
 // Inico del modulo para definir el bloque del checker del ambiente //
 int arrayglobal [$];
 
-class Checker#(parameter profundidad,message,broadcast,controladores,caso,opcion);
+class Checker#(parameter profundidad,message,broadcast,controladores);
   mailbox monitor_al_checker; 
   mailbox agente_al_checker;
-  trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) del_agente;
+  trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores)) del_agente;
   trans_salida_DUT  #(.profundidad(profundidad))del_monitor;
   event agen_listo;
   bit [profundidad-1:0] suma_mensajes [message];
@@ -74,7 +74,15 @@ class Checker#(parameter profundidad,message,broadcast,controladores,caso,opcion
        end
       tiempo_simulacion=$time;
     endtask
-
+	
+  
+  /*task reporte();
+    if(test_al_checker.num()>0)begin
+      $display("Aquiiiii");
+    end
+  endtask*/
+  
+  
   
   task envio_a_la_hoja();
     mensaje.itoa(del_monitor.D_pop);

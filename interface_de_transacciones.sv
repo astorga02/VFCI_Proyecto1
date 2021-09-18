@@ -3,6 +3,7 @@
 typedef enum{llenado_aleatorio,llenado_especifico} tipos_de_transaccion;
 typedef enum {ceros, unos, ceroyunos, direccion_incorrecta,broadcasttt,un_dispo} cas_esq;
 typedef enum {total_mess} tot_mensajes;
+typedef enum {reporte} solicitud_checker;
 
 
 // Inico del modulo para definir el bloque de la interfaz de transacciones del ambiente //
@@ -20,7 +21,7 @@ endinterface
 
 
 //  Entrada DUT //
-class trans_entrada_DUT#(parameter profundidad,controladores,caso,opcion);
+class trans_entrada_DUT#(parameter profundidad,controladores);
 
   randc bit [profundidad-1:0] contenido;
   rand bit delay;

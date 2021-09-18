@@ -5,12 +5,12 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Inico del modulo para definir el bloque del agente del ambiente //
 
-class Agente#(parameter profundidad,controladores,caso,opcion);
+class Agente#(parameter profundidad,controladores);
   event agen_listo;
   mailbox generador_al_agente;
   mailbox agente_al_driver;
   mailbox agente_al_checker;
-  trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) mensaje;
+  trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores)) mensaje;
   
   task run(); //task donde correrá el agente
     mensaje=new; //se inicializa mensaje

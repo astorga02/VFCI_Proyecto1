@@ -1,21 +1,26 @@
     // Inico del modulo para definir el ambiente //
 
-class Ambiente#(parameter profundidad, controladores,BITS,message,broadcast,caso,opcion);
-  Generador #(.message(message),.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion),.broadcast(broadcast)) generador_instancia;
-  Agente #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) agente_instancia;
+class Ambiente#(parameter profundidad, controladores,BITS,message,broadcast);
+  Generador #(.message(message),.profundidad(profundidad),.controladores(controladores),.broadcast(broadcast)) generador_instancia;
+  Agente #(.profundidad(profundidad),.controladores(controladores)) agente_instancia;
   Monitor #(.controladores(controladores),.BITS(BITS),.profundidad(profundidad)) monitor_instancia;
-  Driver #(.controladores(controladores),.BITS(BITS),.profundidad(profundidad),.caso(caso),.opcion(opcion)) controlador_instancia;
-  Checker #(.profundidad(profundidad),.message(message),.broadcast(broadcast),.controladores(controladores),.caso(caso),.opcion(opcion)) checker_instancia;
+  Driver #(.controladores(controladores),.BITS(BITS),.profundidad(profundidad)) controlador_instancia;
+  Checker #(.profundidad(profundidad),.message(message),.broadcast(broadcast),.controladores(controladores)) checker_instancia;
   mailbox generador_al_agente;
   mailbox agente_al_driver;
   mailbox monitor_al_checker;
   mailbox agente_al_checker;
   mailbox driver_al_checker;
+  //mailbox test_al_generador;
+  //mailbox test_al_checker;
+  
   event agen_listo;
   virtual Int_fifo #(.profundidad(profundidad),.controladores(controladores),.BITS(BITS))interfaz_fifo;
  
   
   function new();
+    //test_al_generador = new();
+    //test_al_checker = new();
     generador_al_agente=new();
     agente_al_driver=new();
     agente_al_checker=new();

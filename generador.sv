@@ -1,19 +1,24 @@
 
+
   // Generador //
-class Generador#(parameter message, profundidad,controladores,caso,opcion,broadcast);
+class Generador#(parameter message, profundidad,controladores,broadcast);
   mailbox generador_al_agente;
   event agen_listo;
-  tipos_de_transaccion tipo_llenado=caso;
-  cas_esq caso_de_esquina = opcion; 
+  tipos_de_transaccion tipo_llenado;
+  cas_esq caso_de_esquina; 
+  
+  //string data;
   
   
-  task run();
+  task run();  
+    $display ("Generador: Senal de vida: %0d", tb.test_al_generador.num());
+    tb.test_al_generador.get(tipo_llenado);
     case(tipo_llenado)
         llenado_aleatorio: 
           begin 
             $display("t = %0t Generador: Se ha escogido la transaccion de llenado aleatorio", $time);
             for (int i = 0; i < message; i++) begin
-              trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) instancia_entrada_DUT_1;//creamos una nueva transacción
+              trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores)) instancia_entrada_DUT_1;//creamos una nueva transacción
               instancia_entrada_DUT_1 = new;
               instancia_entrada_DUT_1.randomize();
               instancia_entrada_DUT_1.rest_num_fifo.constraint_mode(0);
@@ -38,9 +43,10 @@ class Generador#(parameter message, profundidad,controladores,caso,opcion,broadc
           begin
             $display("t = %0t Generador: Se ha escogido la transaccion de llenado especifico", $time);
             for (int i = 0; i < message; i++) begin
-              trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) valor2; 
+              trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores)) valor2; 
               valor2 = new;
               valor2.randomize();
+              tb.test_al_generador.peek(caso_de_esquina);
               case (caso_de_esquina)
                 ceros:
                   begin

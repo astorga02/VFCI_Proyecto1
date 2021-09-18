@@ -41,12 +41,12 @@ endclass
 
 
     // Inico del modulo para definir el bloque del driver del ambiente //
-class Driver#(parameter controladores,BITS,profundidad,caso,opcion);
+class Driver#(parameter controladores,BITS,profundidad);
   int contador_payload = 0;
   mailbox agente_al_driver;
   virtual Int_fifo #(.profundidad(profundidad),.controladores(controladores),.BITS(BITS)) interfaz_fifo;
   Fifo #(.profundidad(profundidad)) fifo_simulada[controladores-1:0];
-  trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores),.caso(caso),.opcion(opcion)) instancia_entrada_DUT_1[controladores-1:0],instancia_entrada_DUT_2[controladores-1:0], item3;
+  trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores)) instancia_entrada_DUT_1[controladores-1:0],instancia_entrada_DUT_2[controladores-1:0], item3;
   int tiempo_envio;
   
   

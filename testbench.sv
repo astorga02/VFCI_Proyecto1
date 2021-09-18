@@ -10,20 +10,21 @@
 module tb;
 
   parameter profundidad = 8; 				 
-  parameter caso = llenado_especifico;
-  parameter opcion = un_dispo; 	
+  //parameter caso = llenado_aleatorio;
+  //parameter opcion = un_dispo; 	
   parameter dispositivos = 5;
   parameter BITS = 9;
-  parameter message = 5;
+  parameter message = 2;
   parameter broadcast = 145;
   parameter destino = 2;
   
-  
+  tipos_de_transaccion caso;
+  cas_esq opcion;
   reg clk;
   real ancho_banda;
   real retraso_promedio;
-  real resultado[0:dispositivos];
-  real buffer[0:dispositivos];
+  mailbox test_al_generador = new();
+  //mailbox test_al_checker = new();
   
   initial begin
     $dumpvars(0,bs_gnrtr_n_rbtr);
@@ -33,26 +34,49 @@ module tb;
   always #100 clk=~clk;
   Int_fifo #(.profundidad(profundidad),.controladores(dispositivos),.BITS(BITS)) interfaz_fifo(clk);
   bs_gnrtr_n_rbtr uut(.clk(clk),.reset(interfaz_fifo.reset),.pndng(interfaz_fifo.pndng),.push(interfaz_fifo.push),.pop(interfaz_fifo.pop),.D_pop(interfaz_fifo.D_pop),.D_push(interfaz_fifo.D_push));
-  Ambiente #(.profundidad(profundidad),.controladores(dispositivos),.BITS(BITS),.message(message),.broadcast(broadcast),.caso(caso),.opcion(opcion)) ambiente_instancia;
+  Ambiente #(.profundidad(profundidad),.controladores(dispositivos),.BITS(BITS),.message(message),.broadcast(broadcast)) ambiente_instancia;
 
   initial begin
-    {clk,interfaz_fifo.reset}<=0;
+    
+    {clk,interfaz_fifo.reset} <= 0;
     ambiente_instancia = new();
     ambiente_instancia.interfaz_fifo = interfaz_fifo;
     ambiente_instancia.run();
     
+    caso = llenado_aleatorio;
+    opcion = ceros;
+    test_al_generador.put(caso);
+    test_al_generador.put(opcion);
+    //test_al_generador.get(opcion); //saco la instruccion de la prueba
+    
+    
     #1500000 
-    ancho_banda=(message*profundidad*1000)/ambiente_instancia.checker_instancia.tiempo_simulacion; //calculo el ancho de banda
-    retraso_promedio=ambiente_instancia.checker_instancia.suma_tiempos/ambiente_instancia.checker_instancia.contador;//calculo el retraso promedio total
-    $display ("Tiempo de simulación: %0d", ambiente_instancia.checker_instancia.tiempo_simulacion);
-    $display("Ancho de banda: El ancho de banda total promedio fue de %0.1f x10^9 Hz,utilizando %0d dispositivos y una profundidad de Fifos de %0d",ancho_banda,dispositivos,profundidad);
-    $display("Retraso: El retraso promedio de los mensajes que fueron recibidos fue de %0.1f ns, utilizando %0d dispositivos y una profundidad de Fifo de %0d",retraso_promedio,dispositivos,profundidad);
-    lector_csv();
+    //test_al_generador.put("hola");
+    
+    //sol_checker = reporte;
+    //test_al_checker.put(sol_checker);
+    
+    estadisticas();
+    
     $finish;
   end
 
 
 endmodule
+
+
+task estadisticas ();
+	real ancho_banda;
+  	real retraso_promedio;
+  ancho_banda=(tb.message*tb.profundidad*1000)/tb.ambiente_instancia.checker_instancia.tiempo_simulacion; //calculo el ancho de banda
+    retraso_promedio=tb.ambiente_instancia.checker_instancia.suma_tiempos/tb.ambiente_instancia.checker_instancia.contador;//calculo el retraso promedio total
+  $display ("Tiempo de simulación: %0d", tb.ambiente_instancia.checker_instancia.tiempo_simulacion);
+    $display("Ancho de banda: El ancho de banda total promedio fue de %0.1f x10^9 Hz,utilizando %0d dispositivos y una profundidad de Fifos de %0d",ancho_banda,tb.dispositivos,tb.profundidad);
+    $display("Retraso: El retraso promedio de los mensajes que fueron recibidos fue de %0.1f ns, utilizando %0d dispositivos y una profundidad de Fifo de %0d",retraso_promedio,tb.dispositivos,tb.profundidad);
+    lector_csv();
+  
+endtask
+
 
 task lector_csv();
   int fd;
