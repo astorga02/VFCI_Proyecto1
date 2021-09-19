@@ -3,7 +3,7 @@
 //         contenido de estas transacciones al scoreboard/checker y al driver por medio         //
 //         de mailbox.                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// Inico del modulo para definir el bloque del agente del ambiente //
+
 
 class Agente#(parameter profundidad,controladores);
   event agen_listo; //creo un evento
