@@ -41,21 +41,126 @@ module tb;
     ambiente_instancia = new();
     ambiente_instancia.interfaz_fifo = interfaz_fifo;
     ambiente_instancia.run();
-    
-    caso = llenado_especifico;
-    opcion = broadcasttt;
+    caso = llenado_aleatorio;
+    opcion = ceros;
     test_al_generador.put(caso);
     test_al_generador.put(opcion);
     //test_al_generador.get(opcion); //saco la instruccion de la prueba
     
-    
+    //sol_checker = reporte;
+    //test_al_checker.put(sol_checker);
     #1500000 
+    
+    $display ("-- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\");
+    $display ("-- / -- / -- / -- / -- / -- / -- / -- /");
+    $display (" CAMBIO DE ESCENARIO DE PRUEBAS");
+    $display ("/-- /-- /-- /-- /-- /-- /-- /-- /-- /--");
+    $display ("\\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\--");
+    
+    {clk,interfaz_fifo.reset} <= 0;
+    ambiente_instancia = new();
+    ambiente_instancia.interfaz_fifo = interfaz_fifo;
+    ambiente_instancia.run();
+    caso = llenado_especifico;
+    opcion = ceros;
+    test_al_generador.put(caso);
+    test_al_generador.put(opcion);
+    test_al_generador.get(opcion); //saco la instruccion de la prueba
+    #1500000
+    
+    $display ("-- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\");
+    $display ("-- / -- / -- / -- / -- / -- / -- / -- /");
+    $display (" CAMBIO DE ESCENARIO DE PRUEBAS");
+    $display ("/-- /-- /-- /-- /-- /-- /-- /-- /-- /--");
+    $display ("\\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\--");
+    
+    {clk,interfaz_fifo.reset} <= 0;
+    ambiente_instancia = new();
+    ambiente_instancia.interfaz_fifo = interfaz_fifo;
+    ambiente_instancia.run();
+    caso = llenado_especifico;
+    opcion = unos;
+    test_al_generador.put(caso);
+    test_al_generador.put(opcion);
+    test_al_generador.get(opcion); //saco la instruccion de la prueba
+    #1500000
+    
+    $display ("-- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\");
+    $display ("-- / -- / -- / -- / -- / -- / -- / -- /");
+    $display (" CAMBIO DE ESCENARIO DE PRUEBAS");
+    $display ("/-- /-- /-- /-- /-- /-- /-- /-- /-- /--");
+    $display ("\\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\--");
+    
+    {clk,interfaz_fifo.reset} <= 0;
+    ambiente_instancia = new();
+    ambiente_instancia.interfaz_fifo = interfaz_fifo;
+    ambiente_instancia.run();
+    caso = llenado_especifico;
+    opcion = ceroyunos;
+    test_al_generador.put(caso);
+    test_al_generador.put(opcion);
+    test_al_generador.get(opcion); //saco la instruccion de la prueba
+    #1500000
+    
+    $display ("-- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\");
+    $display ("-- / -- / -- / -- / -- / -- / -- / -- /");
+    $display (" CAMBIO DE ESCENARIO DE PRUEBAS");
+    $display ("/-- /-- /-- /-- /-- /-- /-- /-- /-- /--");
+    $display ("\\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\--");
+    
+    {clk,interfaz_fifo.reset} <= 0;
+    ambiente_instancia = new();
+    ambiente_instancia.interfaz_fifo = interfaz_fifo;
+    ambiente_instancia.run();
+    caso = llenado_especifico;
+    opcion = direccion_incorrecta;
+    test_al_generador.put(caso);
+    test_al_generador.put(opcion);
+    test_al_generador.get(opcion); //saco la instruccion de la prueba
+    #1500000
+    
+    $display ("-- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\");
+    $display ("-- / -- / -- / -- / -- / -- / -- / -- /");
+    $display (" CAMBIO DE ESCENARIO DE PRUEBAS");
+    $display ("/-- /-- /-- /-- /-- /-- /-- /-- /-- /--");
+    $display ("\\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\--");
+    
+    {clk,interfaz_fifo.reset} <= 0;
+    ambiente_instancia = new();
+    ambiente_instancia.interfaz_fifo = interfaz_fifo;
+    ambiente_instancia.run();
+    caso = llenado_especifico;
+    opcion = broadcasttt;
+    test_al_generador.put(caso);
+    test_al_generador.put(opcion);
+    test_al_generador.get(opcion); //saco la instruccion de la prueba
+    #1500000
+    
+    $display ("-- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\");
+    $display ("-- / -- / -- / -- / -- / -- / -- / -- /");
+    $display (" CAMBIO DE ESCENARIO DE PRUEBAS");
+    $display ("/-- /-- /-- /-- /-- /-- /-- /-- /-- /--");
+    $display ("\\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\-- \\--");
+    
+    {clk,interfaz_fifo.reset} <= 0;
+    ambiente_instancia = new();
+    ambiente_instancia.interfaz_fifo = interfaz_fifo;
+    ambiente_instancia.run();
+    caso = llenado_especifico;
+    opcion = un_dispo;
+    test_al_generador.put(caso);
+    test_al_generador.put(opcion);
+    test_al_generador.get(opcion); //saco la instruccion de la prueba
+    #1500000
+    
+    /*
     sol_checker = reporte;
-    test_al_generador.put(sol_checker);
+    test_al_checker.put(sol_checker);*/
     
     estadisticas();
     
     $finish;
+    
   end
 
 
