@@ -47,14 +47,19 @@ class trans_salida_DUT#(parameter profundidad);
   int numero_fifo;
   bit [profundidad-1:0] D_pop;
   int retraso;
+  int buffer_retraso = 0;
 
   function print  (string mensaje_creado);
-    $display("t = %g %s Numero de FIFO = %0d, Dato extraido = %0d, Tiempo de llegada = %0dns", 
+    //if (buffer_retraso == 0) begin
+    $display("t = %0dns %s Numero de FIFO = %0d, Dato extraido = %0d, Tiempo de llegada = %0dns", 
              $time,
              mensaje_creado, 
              this.numero_fifo,
              this.D_pop,
              this.retraso);
+   			 buffer_retraso++;
+    //end
+    //buffer_retraso = 0;
   endfunction
   
 endclass
