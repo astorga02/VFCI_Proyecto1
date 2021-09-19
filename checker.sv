@@ -4,8 +4,10 @@ int arrayglobal [$];
 class Checker#(parameter profundidad,message,broadcast,controladores);
   mailbox monitor_al_checker; 
   mailbox agente_al_checker;
+  mailbox test_al_checker;
   trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores)) del_agente;
   trans_salida_DUT  #(.profundidad(profundidad))del_monitor;
+  solicitud_checker reporte;
   event agen_listo;
   bit [profundidad-1:0] suma_mensajes [message];
   bit [profundidad-1:0] estructura_payload [3][message];
@@ -71,16 +73,19 @@ class Checker#(parameter profundidad,message,broadcast,controladores);
           end 
         end
         if (contador == 0) $display("El destino del mensaje es incorrecto");
+        $display("Aquiiiii   %0d", tb.test_al_checker.num());
+        tiempo_simulacion=$time;
        end
-      tiempo_simulacion=$time;
-    endtask
-	
-  
-  /*task reporte();
-    if(test_al_checker.num()>0)begin
+      //tiempo_simulacion=$time;
+      //tb.test_al_checker.num(); 
       $display("Aquiiiii");
-    end
-  endtask*/
+    endtask
+  
+
+  /*if(tb.test_al_checker.num() > 0)begin
+      $display("Aquiiiii");
+    end*/
+
   
   
   

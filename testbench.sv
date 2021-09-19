@@ -1,4 +1,4 @@
-`include "interface_de_transacciones.sv"
+`include "Interface_de_transacciones.sv"
 `include "agente.sv"
 `include "driver.sv"
 `include "checker.sv"
@@ -9,9 +9,7 @@
 //  Modulo para prueba  //
 module tb;
 
-  parameter profundidad = 8; 				 
-  //parameter caso = llenado_aleatorio;
-  //parameter opcion = un_dispo; 	
+  parameter profundidad = 8;
   parameter dispositivos = 5;
   parameter BITS = 9;
   parameter message = 2;
@@ -20,11 +18,12 @@ module tb;
   
   tipos_de_transaccion caso;
   cas_esq opcion;
+  solicitud_checker sol_checker;
   reg clk;
   real ancho_banda;
   real retraso_promedio;
   mailbox test_al_generador = new();
-  //mailbox test_al_checker = new();
+  mailbox test_al_checker = new();
   
   initial begin
     $dumpvars(0,bs_gnrtr_n_rbtr);
@@ -43,18 +42,16 @@ module tb;
     ambiente_instancia.interfaz_fifo = interfaz_fifo;
     ambiente_instancia.run();
     
-    caso = llenado_aleatorio;
-    opcion = ceros;
+    caso = llenado_especifico;
+    opcion = broadcasttt;
     test_al_generador.put(caso);
     test_al_generador.put(opcion);
     //test_al_generador.get(opcion); //saco la instruccion de la prueba
     
     
     #1500000 
-    //test_al_generador.put("hola");
-    
-    //sol_checker = reporte;
-    //test_al_checker.put(sol_checker);
+    sol_checker = reporte;
+    test_al_generador.put(sol_checker);
     
     estadisticas();
     
