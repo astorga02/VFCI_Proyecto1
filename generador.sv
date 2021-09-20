@@ -11,7 +11,7 @@ class Generador#(parameter message, profundidad,controladores,broadcast);
   
   
   task run();  
-    $display ("Generador: Senal de vida: %0d", tb.test_al_generador.num());
+    $display ("Generador: Senal de vida: %0d", tb.test_al_checker.num());
     tb.test_al_generador.get(tipo_llenado);
     case(tipo_llenado)
         llenado_aleatorio: 

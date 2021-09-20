@@ -1,3 +1,5 @@
+// Code your testbench here
+// or browse Examples
 `include "Interface_de_transacciones.sv"
 `include "agente.sv"
 `include "driver.sv"
@@ -12,13 +14,13 @@ module tb;
   parameter profundidad = 8;
   parameter dispositivos = 5;
   parameter BITS = 9;
-  parameter message = 2;
+  parameter message = 20;
   parameter broadcast = 145;
   parameter destino = 2;
   
   tipos_de_transaccion caso;
   cas_esq opcion;
-  solicitud_checker sol_checker;
+  solicitud_checker nombre_reporte;
   reg clk;
   real ancho_banda;
   real retraso_promedio;
@@ -35,6 +37,9 @@ module tb;
   bs_gnrtr_n_rbtr uut(.clk(clk),.reset(interfaz_fifo.reset),.pndng(interfaz_fifo.pndng),.push(interfaz_fifo.push),.pop(interfaz_fifo.pop),.D_pop(interfaz_fifo.D_pop),.D_push(interfaz_fifo.D_push));
   Ambiente #(.profundidad(profundidad),.controladores(dispositivos),.BITS(BITS),.message(message),.broadcast(broadcast)) ambiente_instancia, ambiente_instancia_1;
 
+  
+  
+  //string nombre_archivo = "simulacion_llenado_aleatorio";
   initial begin
     
     {clk,interfaz_fifo.reset} <= 0;
@@ -43,8 +48,12 @@ module tb;
     ambiente_instancia.run();
     caso = llenado_aleatorio;
     opcion = ceros;
+    nombre_reporte = sim_llenado_aleatorio;
+    test_al_checker.put(nombre_reporte);
     test_al_generador.put(caso);
     test_al_generador.put(opcion);
+    
+    //ambiente_instancia.checker_instancia.simarchivo; 
     //test_al_generador.get(opcion); //saco la instruccion de la prueba
     
     //sol_checker = reporte;
@@ -68,7 +77,7 @@ module tb;
     test_al_generador.put(opcion);
     test_al_generador.get(opcion); //saco la instruccion de la prueba
     #1500000
-    /*
+    
     $display ("-- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\ -- \\");
     $display ("-- / -- / -- / -- / -- / -- / -- / -- /");
     $display (" CAMBIO DE ESCENARIO DE PRUEBAS");
@@ -154,11 +163,11 @@ module tb;
     test_al_generador.get(opcion); //saco la instruccion de la prueba
     #1500000
     
-    /*
-    sol_checker = reporte;
-    test_al_checker.put(sol_checker);*/
     
-    //estadisticas();
+    //sol_checker = reporte;
+    //test_al_checker.put(sol_checker);
+    */
+
     
     $finish;
     

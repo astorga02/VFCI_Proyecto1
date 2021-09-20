@@ -4,7 +4,6 @@ int arrayglobal [$];
 class Checker#(parameter profundidad,message,broadcast,controladores);
   mailbox monitor_al_checker; 
   mailbox agente_al_checker;
-  mailbox test_al_checker;
   trans_entrada_DUT #(.profundidad(profundidad),.controladores(controladores)) del_agente;
   trans_salida_DUT  #(.profundidad(profundidad))del_monitor;
   solicitud_checker reporte;
@@ -21,12 +20,14 @@ class Checker#(parameter profundidad,message,broadcast,controladores);
   int prueba=0;
   int contador2 = 0;
   int contador;
+  int fd1;
   
     task run();
       $display("t = %0t Checker: iniciado el proceso",$time);
       del_monitor=new;
       del_agente=new;
-
+      tb.test_al_checker.peek(reporte);
+      fd1 = $fopen("./simulacion.csv", "w");
       //   cuento la cantidad de mensajes
       for (int i=0;i<message;i++)begin
         agente_al_checker.get(del_agente);
@@ -40,13 +41,12 @@ class Checker#(parameter profundidad,message,broadcast,controladores);
           $display("Checker: El destino del mensaje es incorrecto, destino del mensaje fuera del rango del BUS.");
         end
       end
-
+      
          
       forever begin
         #1monitor_al_checker.get(del_monitor);
         contador = contador + 1;
         #1del_monitor.print("Checker: Mensaje a revisar en el DUT:");
-        $display ("Tiempo de verificacion: %0d", del_monitor.buffer_retraso);
         repositorio_de_mensajes=arrayglobal.find_index with (message==del_monitor.D_pop[profundidad-1:0]);
         tiempo_envio = repositorio_de_mensajes[0];
         arrayglobal[tiempo_envio]=0;
@@ -69,7 +69,7 @@ class Checker#(parameter profundidad,message,broadcast,controladores);
             	$display (" - - - - - - - - -  - - - - - - - - - - ");
               estructura_payload[1][i] = 0;
               estructura_payload[2][i] = 0;
-              envio_a_la_hoja();
+              envio_a_la_hoja(fd1);
               contador ++;
               contador2 ++;
             end 
@@ -80,8 +80,8 @@ class Checker#(parameter profundidad,message,broadcast,controladores);
         tiempo_simulacion=$time;
         
         if (contador2 == message)begin
-          $display(" REPORTE DE LA PRUEBA %0d", contador2);
-          estadisticas(controladores, profundidad, message, tiempo_simulacion);
+          $display(" REPORTE DE LA PRUEBA");
+          estadisticas(controladores, profundidad, message, tiempo_simulacion, reporte.name);
         end
        end
     endtask
@@ -90,33 +90,33 @@ class Checker#(parameter profundidad,message,broadcast,controladores);
   
   
 
-  task envio_a_la_hoja();
+  task envio_a_la_hoja(int fd1);
     mensaje.itoa(del_monitor.D_pop);
     retraso_por_dispositivo.itoa(del_monitor.numero_fifo);
     atraso_csv.itoa(ttime);
     llegada_csv.itoa(del_monitor.retraso);
     envio_csv.itoa(tiempo_envio);
-    pa_la_hoja = {retraso_por_dispositivo,",",mensaje,",",envio_csv,",",llegada_csv,",",atraso_csv};
-    $system($sformatf("echo %0s >> simulacion.csv", pa_la_hoja));
+    pa_la_hoja = {retraso_por_dispositivo,",",mensaje,",",envio_csv,",",llegada_csv,",",atraso_csv,"\n"};
+    $fwrite(fd1, pa_la_hoja);
   endtask
 endclass
 
 
 
 
-task estadisticas (int controladores, profundidad, message, tiempo_simulacion);
+function void estadisticas (int controladores, profundidad, message, tiempo_simulacion, string reporte);
 	real ancho_banda;
   	real retraso_promedio;
   ancho_banda=(message*profundidad*1000)/tiempo_simulacion; //calculo del ancho de banda
     //retraso_promedio=Checker.suma_tiempos/Checker.contador;//calculo el retraso promedio total
   $display ("Tiempo de simulación: %0d", tiempo_simulacion);
     $display("Ancho de banda: El ancho de banda total promedio fue de %0.1f x10^9 Hz,utilizando %0d dispositivos y una profundidad de Fifos de %0d",ancho_banda, controladores, profundidad);
-    lector_csv(controladores, profundidad, message, tiempo_simulacion);
-  
-endtask
+  lector_csv(controladores, profundidad, message, tiempo_simulacion, .reporte(reporte));
+  return ;
+endfunction
 
 
-task lector_csv(int controladores, profundidad, message, tiempo_simulacion);
+task lector_csv(int controladores, profundidad, message, tiempo_simulacion, string reporte);
   int fd;
   int tiempo_envio [$];
   int tiempo_llegada [$];
@@ -128,6 +128,7 @@ task lector_csv(int controladores, profundidad, message, tiempo_simulacion);
   int contador_de_total_mensajes[$];
   string pa_la_hoja;
   string ms, dis, te, tl, at;
+  string concat;
   int promedio, suma;
 
   fd = $fopen("./simulacion.csv", "r");
@@ -139,18 +140,22 @@ task lector_csv(int controladores, profundidad, message, tiempo_simulacion);
   end
   $fclose(fd);
   
+  concat = {"./", reporte, ".csv"};
+  $display("A VEEEER: %s", reporte);
+  fd = $fopen(concat, "w");
+  
   for (int i = 0; i < mensaje.size(); i++)begin
-    tiempo_envio[i] = tiempo_llegada[i-1];
+    tiempo_envio[i] = tiempo_llegada[i-1]+13;
     atraso[i] = tiempo_llegada[i] - tiempo_envio[i];
     ms.itoa(mensaje[i]);
     dis.itoa(dispositivo[i]);
     tl.itoa(tiempo_llegada[i]);
     te.itoa(tiempo_envio[i]);
     at.itoa(atraso[i]);
-    pa_la_hoja = {dis,",",ms,",",te,",",tl,",",at};
-    $system($sformatf("echo %0s >> simulacion2.csv", pa_la_hoja));
+    pa_la_hoja = {dis,",",ms,",",te,",",tl,",",at,"\n"};
+    $fwrite(fd, pa_la_hoja);
   end
-
+	$fclose(fd);
   for (int i = 0; i < tb.dispositivos; i++) begin
     contador_de_total_mensajes = dispositivo.find_index with (item == i);
     $display ("Dispositivo: %0d, Cantidad de mensajes enviados a ese dispositivo: %0d", i, contador_de_total_mensajes.size());
@@ -164,4 +169,3 @@ task lector_csv(int controladores, profundidad, message, tiempo_simulacion);
   end
   $display("Retraso: El retraso promedio de los mensajes que fueron recibidos fue de %0.01f ns, utilizando %0d dispositivos y una profundidad de Fifo de %0d",atraso.sum()/message, controladores, profundidad);
 endtask
-
