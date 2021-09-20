@@ -77,7 +77,7 @@ class Driver#(parameter controladores,BITS,profundidad);
               @(negedge interfaz_fifo.pop[0][w]) //para luego de realizar lo anterior se busca que apenas sea posible, saque el dato del DUT en la ubicacion del controlador
               if (instancia_entrada_DUT_2[w].D_push[profundidad-1:0] < controladores)begin //si 
               tiempo_envio=$time;
-                arrayglobal[tiempo_envio]=instancia_entrada_DUT_2[w].D_push[profundidad-1:0];
+                arrayglobal[tiempo_envio]=instancia_entrada_DUT_2[w].D_push[profundidad-1:0]; //el array global sirve para luego corrobarar los datos con el tiempo de envio como índice en el checker
               end
               interfaz_fifo.pndng[0][w]<=1'b0; //una vez sacado, se restablece a cero la bandera del pending 
             end
