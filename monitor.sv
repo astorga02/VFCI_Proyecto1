@@ -19,7 +19,7 @@ class Monitor#(parameter controladores,BITS,profundidad);
       $display("t = %0t Monitor: Mensaje recibido desde el DUT, ha sido tomado por el Fifo %0d",$time,w);
       fork begin
         item[w] = new;
-        f2[w]=new(profundidad);
+        f2[w]=new();
         forever begin
           
           @(posedge interfaz_fifo.pop[0][w])
