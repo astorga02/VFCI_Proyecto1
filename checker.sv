@@ -11,6 +11,7 @@ class Checker#(parameter profundidad,message,broadcast,controladores);
   bit [profundidad-1:0] estructura_payload [3][message];
   int repositorio_de_mensajes[$];
   int ttime,tiempo_envio,suma_tiempos,control_de_tiempos;
+  event agen_listo;
   string mensaje,retraso_por_dispositivo,atraso_csv,llegada_csv,envio_csv;
   string pa_la_hoja;
   real tiempo_simulacion; 
