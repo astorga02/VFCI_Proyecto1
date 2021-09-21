@@ -984,7 +984,7 @@ endmodule
 // Definition of the Top Bus System 
 ///////////////////////////////////////////////////////////////////////
 
-module bs_gnrtr_n_rbtr #(parameter bits = 9,parameter drvrs = 5, parameter pckg_sz = 8, parameter broadcast = {8{1'b1}}) (
+module bs_gnrtr_n_rbtr #(parameter bits = 8,parameter drvrs = 5, parameter pckg_sz = 8, parameter broadcast = {8{1'b1}}) (
   input clk,
   input reset,
   input  pndng[bits-1:0][drvrs-1:0],
