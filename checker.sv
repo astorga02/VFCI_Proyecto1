@@ -130,16 +130,21 @@ task lector_csv(int controladores, profundidad, message, tiempo_simulacion, stri
   fd = $fopen("./simulacion.csv", "r"); //verifico la existencia del archivo buffer
   if(fd) $display ("Archivo encontrado y abierto en modo lectura");
   else $display ("Archivo no encontrado");
-
   for(int i = 0; i < tb.message; i++) begin
     $fscanf(fd, "%0d,%0d,%0d,%0d,%0d", dispositivo[i], mensaje[i], tiempo_envio[i], tiempo_llegada[i], atraso[i]);
+  end
+   $fclose(fd);
+  fd = $fopen("./simulacion.csv", "w"); //vacio la hoja que ya no se usa
+  for(int i = 0; i < tb.message; i++) begin
+    pa_la_hoja = {"0",",","0",",","0",",","0",",","0","\n"};
+    $fwrite(fd, pa_la_hoja);
   end
   $fclose(fd);
   
   concat = {"./", reporte, ".csv"};
-  $display("A VEEEER: %s", reporte);
   fd = $fopen(concat, "w");
-  
+  pa_la_hoja = {"Dispositivo",",","Mensaje",",","Tiempo envio (ns)",",","Tiempo llegada (ns)",",","Atraso (ns)","\n"};
+  $fwrite(fd, pa_la_hoja);
   for (int i = 0; i < mensaje.size(); i++)begin //guardo la hoja con el nommbre de archvio configurado
     tiempo_envio[i] = tiempo_llegada[i-1]+13;
     atraso[i] = tiempo_llegada[i] - tiempo_envio[i];

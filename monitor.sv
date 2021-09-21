@@ -1,8 +1,5 @@
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// Monitor: Este módulo se encarga de leer las señales de salida del DUT y las convierte        //
-//          en transacciones.                                                                   //
-//////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // Inico del modulo para definir el bloque del monitor del ambiente //
 
@@ -10,33 +7,33 @@ class Monitor#(parameter controladores,BITS,profundidad);
   virtual Int_fifo #(
       .profundidad(profundidad),
       .controladores(controladores),
-      .BITS(BITS)) interfaz_fifo; //declaro la interfaz de la FIFO virtual
+      .BITS(BITS)) interfaz_fifo;
 
-  trans_salida_DUT #(.profundidad(profundidad)) item[controladores-1:0]; //declaro la salida del DUT como una transacción
+  trans_salida_DUT #(.profundidad(profundidad)) item[controladores-1:0];
   mailbox monitor_al_checker;
-  Fifo #(.profundidad(profundidad)) f2[controladores-1:0]; //declaro la FIFO
+  Fifo #(.profundidad(profundidad)) f2[controladores-1:0];
   
-  task run(); //task donde correrá el monitor
+  task run();
     for (int p=0;p<controladores;p++)begin
-      automatic int w = p; //se crea una variable automatic de tipo entero para evitar incompatibilidades
-      $display("t = %0t Monitor: Mensaje recibido desde el DUT, ha sido tomado por el Fifo %0d",$time,w); //imprime tiempo y número de FIFO
+      automatic int w = p;
+      $display("t = %0t Monitor: Mensaje recibido desde el DUT, ha sido tomado por el Fifo %0d",$time,w);
       fork begin
-        item[w] = new;  //construyo la salida del DUT
-        f2[w]=new(); //contruyo una FIFO
+        item[w] = new;
+        f2[w]=new();
         forever begin
           
-          @(posedge interfaz_fifo.pop[0][w]) //cada vez que se de un flanco positivo de reloj de pop del dispositivo
+          @(posedge interfaz_fifo.pop[0][w])
           
-          #10f2[w].push(interfaz_fifo.D_push[0][w]); //se hace push al mensaje que viene del bus en el FIFO
-          #10f2[w].pop(item[w].D_pop); //se hace pop al mensaje desde la FIFO
-          item[w].numero_fifo=w; //se indica cual fue la FIFO que recibió el mensaje
-          item[w].retraso=$time; //tiempo de simulación en el que se recibió el mensaje
+          #10f2[w].push(interfaz_fifo.D_push[0][w]);
+          #10f2[w].pop(item[w].D_pop);
+          item[w].numero_fifo=w;
+          item[w].retraso=$time;
           $display (" - - - - - - - - -  - - - - - - - - - - ");
       	  $display (" ||  ||  ||  ||  ||  ||  ||  ||  ||  || ");
       	  $display (" \\/  \\/  \\/  \\/  \\/  \\/  \\/  \\/  \\/  \\/");
-          $display("t = %0t Monitor: Mensaje recibido desde el DUT, ha sido tomado por el Fifo %0d",$time,w); //imprime tiempo y número de FIFO
-          item[w].print("Monitor:"); //imprimo datos almacenados en item
-          monitor_al_checker.put(item[w]); //mete los mensajes en el mailbox
+          $display("t = %0t Monitor: Mensaje recibido desde el DUT, ha sido tomado por el Fifo %0d",$time,w);
+          item[w].print("Monitor:");
+          monitor_al_checker.put(item[w]);
         end
       end
       join_none

@@ -1,5 +1,4 @@
-// Code your testbench here
-// or browse Examples
+
 `include "interface_de_transacciones.sv"
 `include "agente.sv"
 `include "driver.sv"
